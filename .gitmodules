@@ -1,0 +1,6 @@
+[submodule "safe-smart-account"]
+	path = safe-smart-account
+	url = git@github.com:gatleas17/safe-smart-account.git
+[submodule "safe-core-protocol"]
+	path = safe-core-protocol
+	url = https://gatleas17@github.com/5afe/safe-core-protocol
