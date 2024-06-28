@@ -1,7 +1,14 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity >=0.7.0 <0.9.0;
 
-import "./Safe.sol";
+import {Safe, Enum} from "./Safe.sol";
+
+// Imports are required for NatSpec validation of the compiler, and falsely detected as unused by
+// the linter, so disable the `no-unused-imports` rule for the next line.
+// solhint-disable-next-line no-unused-import
+import {ISafe} from "./interfaces/ISafe.sol";
+// solhint-disable-next-line no-unused-import
+import {ModuleManager} from "./base/ModuleManager.sol";
 
 /**
  * @title SafeL2 - An implementation of the Safe contract that emits additional events on transaction executions.
@@ -28,7 +35,9 @@ contract SafeL2 is Safe {
 
     event SafeModuleTransaction(address module, address to, uint256 value, bytes data, Enum.Operation operation);
 
-    // @inheritdoc Safe
+    /**
+     * @inheritdoc ISafe
+     */
     function execTransaction(
         address to,
         uint256 value,
@@ -61,14 +70,16 @@ contract SafeL2 is Safe {
         return super.execTransaction(to, value, data, operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, signatures);
     }
 
-    // @inheritdoc Safe
-    function execTransactionFromModule(
+    /**
+     * @inheritdoc ModuleManager
+     */
+    function onAfterExecTransactionFromModule(
         address to,
         uint256 value,
         bytes memory data,
-        Enum.Operation operation
-    ) public override returns (bool success) {
+        Enum.Operation operation,
+        bool /*success*/
+    ) internal override {
         emit SafeModuleTransaction(msg.sender, to, value, data, operation);
-        success = super.execTransactionFromModule(to, value, data, operation);
     }
 }
